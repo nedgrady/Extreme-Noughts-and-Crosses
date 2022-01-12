@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtremeNoughtsAndCrosses", "ExtremeNoughtsAndCrosses\ExtremeNoughtsAndCrosses.csproj", "{F732B8DE-0B45-4B74-9227-40D583E94F75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtremeNoughtsAndCrosses.Test", "ExtremeNoughtsAndCrosses.Test\ExtremeNoughtsAndCrosses.Test.csproj", "{B6A6DF5D-E658-4767-B4F9-A5ADA2660164}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F732B8DE-0B45-4B74-9227-40D583E94F75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F732B8DE-0B45-4B74-9227-40D583E94F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F732B8DE-0B45-4B74-9227-40D583E94F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F732B8DE-0B45-4B74-9227-40D583E94F75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6A6DF5D-E658-4767-B4F9-A5ADA2660164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6A6DF5D-E658-4767-B4F9-A5ADA2660164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6A6DF5D-E658-4767-B4F9-A5ADA2660164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6A6DF5D-E658-4767-B4F9-A5ADA2660164}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AE0AD839-DD27-41A0-AA96-FD407EEDD6B2}
+	EndGlobalSection
+EndGlobal
