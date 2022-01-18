@@ -1,5 +1,10 @@
-﻿using ExtremeNoughtsAndCrosses.GameState;
+﻿using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using ExtremeNoughtsAndCrosses.GameState;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace ExtremeNoughtsAndCrosses.Test
@@ -54,6 +59,47 @@ namespace ExtremeNoughtsAndCrosses.Test
                 {
                     {true, null, null},
                     {null, false, null},
+                    {null, null, null}
+                });
+        }
+
+        [Fact]
+        public async Task Returns200WhenValidMoveMade()
+        {
+            var client =
+                new WebApplicationFactory<Program>()
+                    .CreateClient();
+
+            var result = await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=true", null);
+
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task UpdatesGameStateInCorrectPlace()
+        {
+            var gameStateStore = new GameStateStore();
+
+            var client =
+                new WebApplicationFactory<Program>()
+                    .WithWebHostBuilder(thing =>
+                        thing.ConfigureServices(services =>
+                        {
+                            services.Remove<GameStateStore>();
+                            services.AddSingleton(gameStateStore);
+                        }))
+                    .CreateClient();
+
+            var result = await client.PostAsync("/GameState?xPosition=1&yPosition=2&tokenToPlace=true", null);
+
+
+            result.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            gameStateStore.GameState.Should().BeEquivalentTo(
+                new bool?[,]
+                {
+                    {null, null, null},
+                    {null, null, true},
                     {null, null, null}
                 });
         }

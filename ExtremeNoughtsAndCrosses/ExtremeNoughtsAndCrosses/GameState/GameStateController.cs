@@ -24,7 +24,8 @@ namespace ExtremeNoughtsAndCrosses.GameState
             return gamesStateResponse;
         }
 
-        public void PlaceToken(int xPosition, int yPosition, bool tokenToPlace)
+        [HttpPost]
+        public void PlaceToken([FromQuery] int xPosition, [FromQuery] int yPosition, [FromQuery] bool tokenToPlace)
         {
             _gameStateStore.PlaceToken(xPosition, yPosition, tokenToPlace);
         }
