@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ExtremeNoughtsAndCrosses.GameState;
 
 namespace ExtremeNoughtsAndCrosses
 {
@@ -32,6 +33,7 @@ namespace ExtremeNoughtsAndCrosses
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExtremeNoughtsAndCrosses", Version = "v1" });
             });
+            services.AddScoped<GameStateStore>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

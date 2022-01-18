@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace ExtremeNoughtsAndCrosses.GameState
 {
-    public class GameStateController
+    [ApiController]
+    [Route("GameState")]
+    public class GameStateController : ControllerBase
     {
         private readonly GameStateStore _gameStateStore;
 
@@ -9,9 +13,20 @@ namespace ExtremeNoughtsAndCrosses.GameState
             _gameStateStore = gameStateStore;
         }
 
-        public bool?[] Get()
+        [HttpGet]
+        public GameStateResponse Get()
         {
-            return _gameStateStore.GameState;
+            var gamesStateResponse = new GameStateResponse
+            {
+                GameState = _gameStateStore.GameState
+            };
+
+            return gamesStateResponse;
+        }
+
+        public void PlaceToken(int xPosition, int yPosition, bool tokenToPlace)
+        {
+            _gameStateStore.PlaceToken(xPosition, yPosition, tokenToPlace);
         }
     }
 }
