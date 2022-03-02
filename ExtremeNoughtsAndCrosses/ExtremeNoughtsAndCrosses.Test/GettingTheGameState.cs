@@ -37,7 +37,7 @@ namespace ExtremeNoughtsAndCrosses.Test
         public void ReturnsGameStateFromGameStateStore()
         {
             // Arrange
-            var expectedGameState = new Token[,]
+            var expectedGameState = new[,]
             {
                 {Token.Empty, Token.Empty, Token.Empty},
                 {Token.Empty, Token.X, Token.Empty},
@@ -62,7 +62,7 @@ namespace ExtremeNoughtsAndCrosses.Test
         public void GamesStartOffAsEmpty()
         {
             // Arrange
-            var expectedGameState = new Token[,]
+            var expectedGameState = new[,]
             {
                 { Token.Empty, Token.Empty, Token.Empty},
                 { Token.Empty, Token.Empty, Token.Empty},
@@ -84,7 +84,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                 new WebApplicationFactory<Program>()
                     .CreateClient();
             // Act
-            var result = await client.GetAsync("/GameState");
+            var result = await client.GetGameState();
 
             // Assert
             result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -105,7 +105,7 @@ namespace ExtremeNoughtsAndCrosses.Test
             };
 
             // Act
-            var result = await client.GetAsync("/GameState");
+            var result = await client.GetGameState();
 
             var json = await result.Content.ReadAsStringAsync();
 
@@ -142,7 +142,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                     .CreateClient();
             
             // Act
-            var result = await client.GetAsync("/GameState");
+            var result = await client.GetGameState();
 
             var json = await result.Content.ReadAsStringAsync();
 
@@ -168,9 +168,9 @@ namespace ExtremeNoughtsAndCrosses.Test
                     .CreateClient();
 
             // Act
-            await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=X", null);
+            await client.PlaceTokenInPosition(0, 0, Token.X);
 
-            var result = await client.GetAsync("/GameState");
+            var result = await client.GetGameState();
 
             var json = await result.Content.ReadAsStringAsync();
 

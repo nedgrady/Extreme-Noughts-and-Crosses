@@ -69,7 +69,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                 new WebApplicationFactory<Program>()
                     .CreateClient();
 
-            var result = await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=X", null);
+            var result = await client.PlaceTokenInPosition(0, 0, Token.X);
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
@@ -89,7 +89,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                         }))
                     .CreateClient();
 
-            var result = await client.PostAsync("/GameState?xPosition=1&yPosition=2&tokenToPlace=X", null);
+            var result = await client.PlaceTokenInPosition(1, 2, Token.X);
 
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -104,7 +104,7 @@ namespace ExtremeNoughtsAndCrosses.Test
         }
 
         [Fact]
-        public async Task PlacingATokenInAnOccupiedPositionReturnsBadRequest()
+        public async Task InAnOccupiedPositionReturnsUnprocessableEntity()
         {
             var gameStateStore = new GameStateStore();
 
@@ -120,8 +120,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                         }))
                     .CreateClient();
 
-            var result = await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=O", null);
-
+            var result = await client.PlaceTokenInPosition(0, 0, Token.O);
 
             result.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
 
@@ -132,6 +131,43 @@ namespace ExtremeNoughtsAndCrosses.Test
                     {Token.Empty, Token.Empty, Token.Empty},
                     {Token.Empty, Token.Empty, Token.Empty}
                 });
+        }
+
+        [Fact]
+        public async Task ThatAreEmptyReturnsBadRequest()
+        {
+            var client =
+                new WebApplicationFactory<Program>()
+                    .CreateClient();
+
+            var result = await client.PlaceTokenInPosition(1, 1, Token.Empty);
+
+            result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task OutOfTurnOnTheFirstTurnReturnsUnprocessableEntity()
+        {
+            var client =
+                new WebApplicationFactory<Program>()
+                    .CreateClient();
+
+            var result = await client.PlaceTokenInPosition(0, 0, Token.O);
+
+            result.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+        }
+
+        [Fact]
+        public async Task OutOfTurnOrderReturnsUnprocessableEntity()
+        {
+            var client =
+                new WebApplicationFactory<Program>()
+                    .CreateClient();
+
+            await client.PlaceTokenInPosition(0, 0, Token.X);
+            var result = await client.PlaceTokenInPosition(1, 0, Token.X);
+
+            result.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
         }
     }
 }

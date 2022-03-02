@@ -27,6 +27,11 @@ namespace ExtremeNoughtsAndCrosses.GameState
         [HttpPost]
         public IActionResult PlaceToken([FromQuery] int xPosition, [FromQuery] int yPosition, [FromQuery] Token tokenToPlace)
         {
+            if (tokenToPlace == Token.Empty)
+            {
+                return BadRequest();
+            }
+
             var placed =_gameStateStore.PlaceToken(xPosition, yPosition, tokenToPlace);
 
             if (placed)

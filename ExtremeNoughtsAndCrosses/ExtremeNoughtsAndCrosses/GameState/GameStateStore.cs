@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace ExtremeNoughtsAndCrosses.GameState
 {
     public class GameStateStore
@@ -14,6 +16,8 @@ namespace ExtremeNoughtsAndCrosses.GameState
 
         public virtual Token[,] GameState { get; }
 
+        public Token TurnToken { get; protected set; } = Token.X;
+
         public bool PlaceToken(int xPosition, int yPosition, Token tokenToPlace)
         {
             if (GameState[xPosition, yPosition] != Token.Empty)
@@ -21,9 +25,20 @@ namespace ExtremeNoughtsAndCrosses.GameState
                 return false;
             }
 
+            if (tokenToPlace != TurnToken)
+            {
+                return false;
+            }
+
             GameState[xPosition, yPosition] = tokenToPlace;
+            TakeTurn();
 
             return true;
+        }
+
+        private void TakeTurn()
+        {
+            TurnToken = TurnToken == Token.O ? Token.X : Token.O;
         }
     }
 }
