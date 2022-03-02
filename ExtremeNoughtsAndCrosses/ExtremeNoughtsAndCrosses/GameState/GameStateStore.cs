@@ -16,7 +16,10 @@ namespace ExtremeNoughtsAndCrosses.GameState
 
         public virtual Token[,] GameState { get; }
 
-        public Token TurnToken { get; protected set; } = Token.X;
+        public Token TurnToken { get; private set; } = Token.X;
+        public Token Winner => GameState[0, 0] == Token.O && GameState[1, 0] == Token.O && GameState[2, 0] == Token.O ||
+                               GameState[0, 1] == Token.O && GameState[1, 1] == Token.O && GameState[2, 1] == Token.O
+                                ? Token.O : Token.X;
 
         public bool PlaceToken(int xPosition, int yPosition, Token tokenToPlace)
         {
