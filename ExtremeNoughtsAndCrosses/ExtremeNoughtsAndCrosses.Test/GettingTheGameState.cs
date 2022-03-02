@@ -116,7 +116,7 @@ namespace ExtremeNoughtsAndCrosses.Test
         }
 
         [Fact]
-        public async Task ReturnsCorrectJsonAfterTwoMoves()
+        public async Task ReturnsCorrectJsonWhenVariousTokensArePresent()
         {
             var expectedGameState = new bool?[,]
             {
@@ -142,6 +142,34 @@ namespace ExtremeNoughtsAndCrosses.Test
                     .CreateClient();
             
             // Act
+            var result = await client.GetAsync("/GameState");
+
+            var json = await result.Content.ReadAsStringAsync();
+
+            var receivedGameStateResponse = JsonConvert.DeserializeObject<GameStateResponse>(json);
+
+            // Assert
+            receivedGameStateResponse.GameState.Should().BeEquivalentTo(expectedGameState);
+        }
+
+        [Fact]
+        public async Task GameStateIsPersisted()
+        {
+            var expectedGameState = new bool?[,]
+            {
+                {true, null, null},
+                {null, null, null},
+                {null, null, null}
+            };
+
+            var client =
+                new WebApplicationFactory<Program>()
+                    .WithWebHostBuilder(_ => {})
+                    .CreateClient();
+
+            // Act
+            await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=true", null);
+
             var result = await client.GetAsync("/GameState");
 
             var json = await result.Content.ReadAsStringAsync();
