@@ -17,7 +17,7 @@ namespace ExtremeNoughtsAndCrosses.Test
         public void InitiallyReturnsAnEmptyBoards()
         {
             // Arrange
-            var expectedGameState = new bool?[,] { };
+            var expectedGameState = new Token[,] { };
             var mockGameStateStore = new Mock<GameStateStore>();
 
             mockGameStateStore.Setup(
@@ -37,11 +37,11 @@ namespace ExtremeNoughtsAndCrosses.Test
         public void ReturnsGameStateFromGameStateStore()
         {
             // Arrange
-            var expectedGameState = new bool?[,]
+            var expectedGameState = new Token[,]
             {
-                {null, null, null},
-                {null, true, null},
-                { null, null, null}
+                {Token.Empty, Token.Empty, Token.Empty},
+                {Token.Empty, Token.X, Token.Empty},
+                { Token.Empty, Token.Empty, Token.Empty}
             };
             var mockGameStateStore = new Mock<GameStateStore>();
 
@@ -62,11 +62,11 @@ namespace ExtremeNoughtsAndCrosses.Test
         public void GamesStartOffAsEmpty()
         {
             // Arrange
-            var expectedGameState = new bool?[,]
+            var expectedGameState = new Token[,]
             {
-                { null, null, null},
-                { null, null, null},
-                { null, null, null }
+                { Token.Empty, Token.Empty, Token.Empty},
+                { Token.Empty, Token.Empty, Token.Empty},
+                { Token.Empty, Token.Empty, Token.Empty }
             };
             var gameStateStore = new GameStateStore();
 
@@ -97,11 +97,11 @@ namespace ExtremeNoughtsAndCrosses.Test
                 new WebApplicationFactory<Program>()
                     .CreateClient();
 
-            var expectedGameState = new bool?[,]
+            var expectedGameState = new [,]
             {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {Token.Empty, Token.Empty, Token.Empty},
+                {Token.Empty, Token.Empty, Token.Empty},
+                {Token.Empty, Token.Empty, Token.Empty}
             };
 
             // Act
@@ -118,11 +118,11 @@ namespace ExtremeNoughtsAndCrosses.Test
         [Fact]
         public async Task ReturnsCorrectJsonWhenVariousTokensArePresent()
         {
-            var expectedGameState = new bool?[,]
+            var expectedGameState = new [,]
             {
-                {null, null, false},
-                {null, true, null},
-                {null, null, true}
+                {Token.Empty, Token.Empty, Token.O},
+                {Token.Empty, Token.X, Token.Empty},
+                {Token.Empty, Token.Empty, Token.X}
             };
 
             var mockGameStateStore = new Mock<GameStateStore>();
@@ -155,11 +155,11 @@ namespace ExtremeNoughtsAndCrosses.Test
         [Fact]
         public async Task GameStateIsPersisted()
         {
-            var expectedGameState = new bool?[,]
+            var expectedGameState = new [,]
             {
-                {true, null, null},
-                {null, null, null},
-                {null, null, null}
+                {Token.X, Token.Empty, Token.Empty},
+                {Token.Empty, Token.Empty, Token.Empty},
+                {Token.Empty, Token.Empty, Token.Empty}
             };
 
             var client =
@@ -168,7 +168,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                     .CreateClient();
 
             // Act
-            await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=true", null);
+            await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=X", null);
 
             var result = await client.GetAsync("/GameState");
 

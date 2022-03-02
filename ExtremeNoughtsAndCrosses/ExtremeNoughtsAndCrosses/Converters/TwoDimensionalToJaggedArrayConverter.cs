@@ -1,17 +1,18 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ExtremeNoughtsAndCrosses.GameState;
 
 namespace ExtremeNoughtsAndCrosses.Converters
 {
-    public class TwoDimensionalToJaggedArrayConverter : JsonConverter<bool?[,]>
+    public class TwoDimensionalToJaggedArrayConverter : JsonConverter<Token[,]>
     {
-        public override bool?[,]? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Token[,]? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return new bool?[,] { };
+            return new Token[,] { };
         }
 
-        public override void Write(Utf8JsonWriter writer, bool?[,] value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Token[,] value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
 
@@ -23,13 +24,17 @@ namespace ExtremeNoughtsAndCrosses.Converters
                 {
                     var currentItem = value[x, y];
 
-                    if (currentItem.HasValue)
+                    if (currentItem == Token.X)
                     {
-                        writer.WriteBooleanValue(currentItem.Value);
+                        writer.WriteStringValue("X");
+                    }
+                    else if (currentItem == Token.O)
+                    {
+                        writer.WriteStringValue("O");
                     }
                     else
                     {
-                        writer.WriteNullValue();
+                        writer.WriteStringValue("Empty");
                     }
                 }
 

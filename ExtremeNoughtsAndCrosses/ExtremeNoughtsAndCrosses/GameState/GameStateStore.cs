@@ -4,19 +4,26 @@ namespace ExtremeNoughtsAndCrosses.GameState
     {
         public GameStateStore()
         {
-            GameState = new bool?[,]
+            GameState = new Token[,]
             {
-                { null, null, null },
-                { null, null, null },
-                { null, null, null }
+                { Token.Empty, Token.Empty, Token.Empty },
+                { Token.Empty, Token.Empty, Token.Empty },
+                { Token.Empty, Token.Empty, Token.Empty }
             };
         }
 
-        public virtual bool?[,] GameState { get; }
+        public virtual Token[,] GameState { get; }
 
-        public void PlaceToken(int xPosition, int yPosition, bool tokenToPlace)
+        public bool PlaceToken(int xPosition, int yPosition, Token tokenToPlace)
         {
+            if (GameState[xPosition, yPosition] != Token.Empty)
+            {
+                return false;
+            }
+
             GameState[xPosition, yPosition] = tokenToPlace;
+
+            return true;
         }
     }
 }

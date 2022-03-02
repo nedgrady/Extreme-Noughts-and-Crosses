@@ -1,10 +1,9 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
-using ExtremeNoughtsAndCrosses.GameState;
+﻿using ExtremeNoughtsAndCrosses.GameState;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ExtremeNoughtsAndCrosses.Test
@@ -17,14 +16,14 @@ namespace ExtremeNoughtsAndCrosses.Test
             var gameStateStoreUnderTest = new GameStateStore();
             var gameStateController = new GameStateController(gameStateStoreUnderTest);
 
-            gameStateController.PlaceToken(1, 1, true);
+            gameStateController.PlaceToken(1, 1, Token.X);
 
             gameStateStoreUnderTest.GameState.Should().BeEquivalentTo(
-                new bool?[,]
+                new Token[,]
                 {
-                    {null, null, null},
-                    {null, true, null},
-                    {null, null, null}
+                    {Token.Empty, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.X, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.Empty}
                 });
         }
 
@@ -34,14 +33,14 @@ namespace ExtremeNoughtsAndCrosses.Test
             var gameStateStoreUnderTest = new GameStateStore();
             var gameStateController = new GameStateController(gameStateStoreUnderTest);
 
-            gameStateController.PlaceToken(0, 0, true);
+            gameStateController.PlaceToken(0, 0, Token.X);
 
             gameStateStoreUnderTest.GameState.Should().BeEquivalentTo(
-                new bool?[,]
+                new Token[,]
                 {
-                    {true, null, null},
-                    {null, null, null},
-                    {null, null, null}
+                    {Token.X, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.Empty}
                 });
         }
 
@@ -51,15 +50,15 @@ namespace ExtremeNoughtsAndCrosses.Test
             var gameStateStoreUnderTest = new GameStateStore();
             var gameStateController = new GameStateController(gameStateStoreUnderTest);
 
-            gameStateController.PlaceToken(0, 0, true);
-            gameStateController.PlaceToken(1, 1, false);
+            gameStateController.PlaceToken(0, 0, Token.X);
+            gameStateController.PlaceToken(1, 1, Token.O);
 
             gameStateStoreUnderTest.GameState.Should().BeEquivalentTo(
-                new bool?[,]
+                new Token[,]
                 {
-                    {true, null, null},
-                    {null, false, null},
-                    {null, null, null}
+                    {Token.X, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.O, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.Empty}
                 });
         }
 
@@ -70,7 +69,7 @@ namespace ExtremeNoughtsAndCrosses.Test
                 new WebApplicationFactory<Program>()
                     .CreateClient();
 
-            var result = await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=true", null);
+            var result = await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=X", null);
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
         }
@@ -90,17 +89,48 @@ namespace ExtremeNoughtsAndCrosses.Test
                         }))
                     .CreateClient();
 
-            var result = await client.PostAsync("/GameState?xPosition=1&yPosition=2&tokenToPlace=true", null);
+            var result = await client.PostAsync("/GameState?xPosition=1&yPosition=2&tokenToPlace=X", null);
 
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
 
             gameStateStore.GameState.Should().BeEquivalentTo(
-                new bool?[,]
+                new Token[,]
                 {
-                    {null, null, null},
-                    {null, null, true},
-                    {null, null, null}
+                    {Token.Empty, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.X},
+                    {Token.Empty, Token.Empty, Token.Empty}
+                });
+        }
+
+        [Fact]
+        public async Task PlacingATokenInAnOccupiedPositionReturnsBadRequest()
+        {
+            var gameStateStore = new GameStateStore();
+
+            gameStateStore.PlaceToken(0, 0, Token.X);
+
+            var client =
+                new WebApplicationFactory<Program>()
+                    .WithWebHostBuilder(thing =>
+                        thing.ConfigureServices(services =>
+                        {
+                            services.Remove<GameStateStore>();
+                            services.AddSingleton(gameStateStore);
+                        }))
+                    .CreateClient();
+
+            var result = await client.PostAsync("/GameState?xPosition=0&yPosition=0&tokenToPlace=O", null);
+
+
+            result.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+
+            gameStateStore.GameState.Should().BeEquivalentTo(
+                new Token[,]
+                {
+                    {Token.X, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.Empty},
+                    {Token.Empty, Token.Empty, Token.Empty}
                 });
         }
     }

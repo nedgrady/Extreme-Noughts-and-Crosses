@@ -6,6 +6,6 @@ namespace ExtremeNoughtsAndCrosses.GameState
     public class GameStateResponse
     {
         [JsonConverter(typeof(TwoDimensionalToJaggedArrayConverter))]
-        public bool?[,] GameState { get; set; }
+        public Token[,] GameState { get; set; }
     }
 }
